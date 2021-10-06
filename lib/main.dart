@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: SecondScreen(),
+      home: HomeScreen(),
     );
   }
 }
@@ -56,6 +56,21 @@ class _HomeScreenState extends State<HomeScreen> {
       home: Scaffold(
         appBar: AppBar(
           title: const Text("SunBay"),
+          actions: [
+            TextButton.icon(
+              style: TextButton.styleFrom(
+                primary: Colors.black,
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SecondScreen()),
+                );
+              },
+              icon: const Icon(Icons.arrow_right),
+              label: const Text("ProviderSample"),
+            )
+          ],
         ),
         body: ListView(
           children: [
