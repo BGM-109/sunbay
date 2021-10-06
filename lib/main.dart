@@ -30,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<List<dynamic>> getData(String text) async {
     //Insert APIKEY
+    var apiKey = "7330360-e350122288fab0405c64b3e9f";
     var inputText = text;
     var url =
         "https://pixabay.com/api/?key=$apiKey&q=$inputText&image_type=photo&pretty=true";
