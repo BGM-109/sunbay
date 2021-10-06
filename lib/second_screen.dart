@@ -22,6 +22,9 @@ class _SecondScreenState extends State<SecondScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<ApiProvider>(context);
+    final posts = provider.posts;
+
     return Scaffold(
         appBar: AppBar(
           title: const Text("SunBay2"),
@@ -39,41 +42,33 @@ class _SecondScreenState extends State<SecondScreen> {
                     controller.text = "";
                     Provider.of<ApiProvider>(context, listen: false)
                         .getPostsData(keyword);
-                    setState(() {});
                   }
                 },
                 label: const Text("Search")),
-            _myListView()
+            provider.isLoading
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : ListView(
+                    shrinkWrap: true,
+                    primary: false,
+                    children: posts.isEmpty
+                        ? const [Center(child: Text("No Data"))]
+                        : posts
+                            .map(
+                              (e) => Column(
+                                children: [
+                                  Image.network(
+                                    e.thumbnailUrl!,
+                                    width: 200,
+                                  ),
+                                  Text(e.tags!),
+                                ],
+                              ),
+                            )
+                            .toList(),
+                  ),
           ],
         ));
-  }
-
-  Widget _myListView() {
-    final provider = Provider.of<ApiProvider>(context, listen: false);
-    final posts = provider.posts;
-
-    if (provider.isLoading && posts.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
-    } else if (!provider.isLoading && posts.isEmpty) {
-      return const Center(child: Text("No Data"));
-    } else {
-      return ListView(
-        shrinkWrap: true,
-        primary: false,
-        children: posts
-            .map(
-              (e) => Column(
-                children: [
-                  Image.network(
-                    e.thumbnailUrl!,
-                    width: 200,
-                  ),
-                  Text(e.tags!),
-                ],
-              ),
-            )
-            .toList(),
-      );
-    }
   }
 }
