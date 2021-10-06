@@ -15,9 +15,8 @@ class MyApp extends StatelessWidget {
     var uri = Uri.parse(url);
     var response = await http.get(uri);
     if (response.statusCode == 200) {
-      var jsonResponse =
-          convert.jsonDecode(response.body) as Map<String, dynamic>;
-      List hits = jsonResponse["hits"];
+      var jsonResponse = convert.jsonDecode(response.body);
+      List<dynamic> hits = jsonResponse["hits"];
       return hits;
     } else {
       print('Request failed with status: ${response.statusCode}.');
@@ -28,28 +27,53 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String? text;
-
     return MaterialApp(
-        home: Scaffold(
-      appBar: AppBar(
-        title: const Text("SunBay"),
-      ),
-      body: Column(
-        children: [
-          TextField(
-            onChanged: (value) {
-              text = value;
-            },
-          ),
-          ElevatedButton.icon(
-              icon: const Icon(Icons.search_outlined),
-              onPressed: () {
-                print(text);
-                getData();
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text("SunBay"),
+        ),
+        body: ListView(
+          children: [
+            TextField(
+              onChanged: (value) {
+                text = value;
               },
-              label: const Text("Search")),
-        ],
+            ),
+            ElevatedButton.icon(
+                icon: const Icon(Icons.search_outlined),
+                onPressed: () {
+                  print(text);
+                  getData();
+                },
+                label: const Text("Search")),
+            FutureBuilder<List<dynamic>>(
+                future: getData(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Text("Got Error");
+                  } else if (snapshot.hasData) {
+                    return ListView.builder(
+                        primary: false,
+                        shrinkWrap: true,
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              Image.network(
+                                snapshot.data![index]["webformatURL"],
+                                width: 200,
+                              ),
+                              Text(snapshot.data![index]["tags"]),
+                            ],
+                          );
+                        });
+                  } else {
+                    return const CircularProgressIndicator();
+                  }
+                }),
+          ],
+        ),
       ),
-    ));
+    );
   }
 }
