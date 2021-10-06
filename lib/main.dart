@@ -26,7 +26,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String keyword = "iphone";
-  String? text;
   TextEditingController? controller = TextEditingController();
 
   Future<List<dynamic>> getData(String text) async {
@@ -57,15 +56,12 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             TextField(
               controller: controller,
-              onChanged: (value) {
-                text = value;
-              },
             ),
             ElevatedButton.icon(
                 icon: const Icon(Icons.search_outlined),
                 onPressed: () {
                   setState(() {
-                    keyword = text!;
+                    keyword = controller!.text = "";
                     controller!.text = "";
                   });
                 },
