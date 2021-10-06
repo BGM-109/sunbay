@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 icon: const Icon(Icons.search_outlined),
                 onPressed: () {
                   setState(() {
-                    keyword = controller!.text = "";
+                    keyword = controller!.text;
                     controller!.text = "";
                   });
                 },
