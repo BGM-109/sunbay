@@ -8,10 +8,9 @@ class ApiProvider with ChangeNotifier {
 
   void getPostsData(String keyword) async {
     isLoading = true;
-    notifyListeners();
     final items = await Network(apiKey: "7330360-e350122288fab0405c64b3e9f").getData(keyword);
     posts = [
-      ...items,
+      ...items
     ];
 
     isLoading = false;
