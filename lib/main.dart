@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:sunbay/api_provider.dart';
 import 'dart:convert' as convert;
+import 'package:sunbay/second_screen.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  runApp(ChangeNotifierProvider<ApiProvider>(
+      create: (context) => ApiProvider(), child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -12,7 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: HomeScreen(),
+      home: SecondScreen(),
     );
   }
 }

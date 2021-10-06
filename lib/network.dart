@@ -17,9 +17,9 @@ class Network {
       var response = await http.get(uri);
       if (response.statusCode == 200) {
         var jsonResponse = convert.jsonDecode(response.body);
-        List<Post> hits =
-            jsonResponse["hits"].map((post) => Post.fromJson(post));
-        return hits;
+        List<dynamic> hits = jsonResponse["hits"];
+        List<Post> result = hits.map((post) => Post.fromJson(post)).toList();
+        return result;
       } else {
         print('Request failed with status: ${response.statusCode}.');
       }
