@@ -9,9 +9,31 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  Future<List<dynamic>> getData() async {
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: HomeScreen(),
+    );
+  }
+}
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  String keyword = "iphone";
+  String? text;
+  TextEditingController? controller = TextEditingController();
+
+  Future<List<dynamic>> getData(String text) async {
+    var apiKey = "7330360-e350122288fab0405c64b3e9f";
+    var inputText = text;
     var url =
-        "https://pixabay.com/api/?key=7330360-e350122288fab0405c64b3e9f&q=iphone&image_type=photo&pretty=true";
+        "https://pixabay.com/api/?key=$apiKey&q=$inputText&image_type=photo&pretty=true";
     var uri = Uri.parse(url);
     var response = await http.get(uri);
     if (response.statusCode == 200) {
@@ -26,7 +48,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String? text;
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
@@ -35,6 +56,7 @@ class MyApp extends StatelessWidget {
         body: ListView(
           children: [
             TextField(
+              controller: controller,
               onChanged: (value) {
                 text = value;
               },
@@ -42,14 +64,18 @@ class MyApp extends StatelessWidget {
             ElevatedButton.icon(
                 icon: const Icon(Icons.search_outlined),
                 onPressed: () {
-                  print(text);
-                  getData();
+                  setState(() {
+                    keyword = text!;
+                    controller!.text = "";
+                  });
                 },
                 label: const Text("Search")),
             FutureBuilder<List<dynamic>>(
-                future: getData(),
+                future: getData(keyword),
                 builder: (context, snapshot) {
-                  if (snapshot.hasError) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
                     return const Text("Got Error");
                   } else if (snapshot.hasData) {
                     return ListView.builder(
@@ -68,7 +94,7 @@ class MyApp extends StatelessWidget {
                           );
                         });
                   } else {
-                    return const CircularProgressIndicator();
+                    return const Center(child: Text("404 Error"));
                   }
                 }),
           ],
