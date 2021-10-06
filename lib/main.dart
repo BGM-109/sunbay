@@ -26,7 +26,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String keyword = "iphone";
-  TextEditingController? controller = TextEditingController();
+  TextEditingController controller = TextEditingController();
 
   Future<List<dynamic>> getData(String text) async {
     var apiKey = "7330360-e350122288fab0405c64b3e9f";
@@ -54,18 +54,24 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         body: ListView(
           children: [
-            TextField(
-              controller: controller,
+            Column(
+              children: [
+                TextFormField(
+                  controller: controller,
+                ),
+                ElevatedButton.icon(
+                    icon: const Icon(Icons.search_outlined),
+                    onPressed: () {
+                      if (controller.text.isNotEmpty) {
+                        setState(() {
+                          keyword = controller.text;
+                          controller.text = "";
+                        });
+                      }
+                    },
+                    label: const Text("Search")),
+              ],
             ),
-            ElevatedButton.icon(
-                icon: const Icon(Icons.search_outlined),
-                onPressed: () {
-                  setState(() {
-                    keyword = controller!.text;
-                    controller!.text = "";
-                  });
-                },
-                label: const Text("Search")),
             FutureBuilder<List<dynamic>>(
                 future: getData(keyword),
                 builder: (context, snapshot) {
